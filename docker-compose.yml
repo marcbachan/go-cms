@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  cms:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./cms/posts:/app/posts
+      - ./cms/images:/app/images
+    environment:
+      - GO111MODULE=on
