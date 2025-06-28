@@ -12,6 +12,8 @@ import (
 	"cms/model"
 	"cms/storage"
 	"cms/utils"
+
+	"github.com/gorilla/mux"
 )
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -66,4 +68,40 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"url": webPath,
 	})
+}
+
+func UpdatePost(w http.ResponseWriter, r *http.Request) {
+	slug := mux.Vars(r)["slug"]
+	if slug == "" {
+		http.Error(w, "Missing slug", http.StatusBadRequest)
+		return
+	}
+
+	var post model.BlogPost
+	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	path := filepath.Join(config.AppConfig.PostsDir, slug+".md")
+	if err := storage.WriteMarkdownWithFrontmatter(path, post); err != nil {
+		http.Error(w, "Failed to update post", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Post updated")
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	slug := mux.Vars(r)["slug"]
+	path := filepath.Join(config.AppConfig.PostsDir, slug+".md")
+
+	if err := os.Remove(path); err != nil {
+		http.Error(w, "Could not delete post", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Deleted"))
 }

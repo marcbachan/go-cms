@@ -1,28 +1,54 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
+
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+
 	"cms/config"
 	"cms/handlers"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
+	_ = godotenv.Load() // load .env file automatically
 	config.LoadConfig("config.json")
 
-	os.MkdirAll(config.AppConfig.PostsDir, os.ModePerm)
-	os.MkdirAll(config.AppConfig.ImagesDir, os.ModePerm)
+	// Set up secure cookie store
+	sessionSecret := os.Getenv("SESSION_SECRET")
+	if sessionSecret == "" {
+		log.Fatal("SESSION_SECRET not set")
+	}
+
+	store := sessions.NewCookieStore([]byte(sessionSecret))
+	handlers.SetStore(store)
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/posts", handlers.CreatePost).Methods("POST")
-	r.HandleFunc("/api/upload", handlers.UploadImage).Methods("POST")
-	r.HandleFunc("/new", handlers.NewPostForm).Methods("GET")
+	// Public routes
+	r.HandleFunc("/login", handlers.LoginForm).Methods("GET")
+	r.HandleFunc("/login", handlers.Login).Methods("POST")
+	r.HandleFunc("/logout", handlers.Logout).Methods("GET")
 
-	log.Println("Server running at :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	// Auth-protected routes
+	protected := r.NewRoute().Subrouter()
+	protected.Use(handlers.RequireLogin)
+
+	// UI
+	protected.HandleFunc("/new", handlers.NewPostForm).Methods("GET")
+	protected.HandleFunc("/edit/{slug}", handlers.EditPostForm).Methods("GET")
+	protected.HandleFunc("/posts", handlers.ListPosts).Methods("GET")
+
+	// API
+	protected.HandleFunc("/api/posts", handlers.CreatePost).Methods("POST")
+	protected.HandleFunc("/api/posts/{slug}", handlers.UpdatePost).Methods("PUT")
+	protected.HandleFunc("/api/posts/{slug}", handlers.DeletePost).Methods("DELETE")
+	protected.HandleFunc("/api/upload", handlers.UploadImage).Methods("POST")
+
+	log.Println("CMS running on http://localhost:8080")
+	http.ListenAndServe(":8080", r)
 }

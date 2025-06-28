@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Post - {{ .Post.Title }}</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  <style>
+    input, textarea { width: 100%; padding: 8px; margin-bottom: 12px; }
+    label { font-weight: bold; display: block; }
+  </style>
+</head>
+<body>
+  <h1>✏️ Editing Post: {{ .Post.Title }}</h1>
+
+  <form id="editForm" onsubmit="submitEdit(event)">
+    <label>Title</label>
+    <input name="title" value="{{ .Post.Title }}" required />
+
+    <label>Excerpt</label>
+    <input name="excerpt" value="{{ .Post.Excerpt }}" />
+
+    <label>Date</label>
+    <input type="date" name="date" value="{{ .Post.Date }}" />
+
+    <label>Cover Image URL</label>
+    <input name="coverImage" value="{{ .Post.CoverImage }}" />
+
+    <label>OG Image URL</label>
+    <input name="ogImage.url" value="{{ .Post.OGImage.URL }}" />
+
+    <label>Tags (comma-separated)</label>
+    <input name="tags" value="{{ join .Post.Tags ", " }}" />
+
+    <label>Content</label>
+    <textarea name="content" id="content" rows="10" oninput="updatePreview()">{{ .Body }}</textarea>
+
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <div id="result" style="margin-top: 1em;"></div>
+    
+
+    <h3>Live Preview</h3>
+    <div id="preview" style="border:1px solid #ccc; padding:1em;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        function updatePreview() {
+        const content = document.getElementById("content").value;
+        document.getElementById("preview").innerHTML = marked.parse(content);
+     }
+
+        window.onload = updatePreview;
+    </script>
+
+
+  <script>
+    async function submitEdit(event) {
+      event.preventDefault();
+      const form = document.getElementById("editForm");
+      const formData = new FormData(form);
+
+      const json = {};
+      for (const [key, value] of formData.entries()) {
+        if (key.includes(".")) {
+          const [parent, child] = key.split(".");
+          json[parent] = json[parent] || {};
+          json[parent][child] = value;
+        } else if (key === "tags") {
+          json[key] = value.split(",").map(t => t.trim()).filter(Boolean);
+        } else {
+          json[key] = value;
+        }
+      }
+
+      const slug = "{{ .Slug }}";
+
+      const res = await fetch(`/api/posts/${slug}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(json)
+      });
+
+      const result = await res.text();
+      document.getElementById("result").innerText = result;
+    }
+  </script>
+</body>
+</html>

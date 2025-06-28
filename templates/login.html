@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+</head>
+<body>
+  <h1>Admin Login</h1>
+  <form method="POST" action="/login">
+    <label>Username</label><br/>
+    <input name="username" required /><br/>
+    <label>Password</label><br/>
+    <input type="password" name="password" required /><br/>
+    <button type="submit">Login</button>
+  </form>
+  {{ if .Error }}
+    <p style="color:red;">Invalid credentials</p>
+  {{ end }}
+</body>
+</html>

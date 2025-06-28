@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Post List</title>
+</head>
+<body>
+<a href="/new"><button>Create New Post</button></a>
+
+    <h1>All Blog Posts</h1>
+<ul>
+  {{ range . }}
+    <li>
+      <a href="/edit/{{ . }}">{{ . }}</a>
+      <button hx-delete="/api/posts/{{ . }}" hx-target="#post-{{ . }}" hx-swap="outerHTML">🗑 Delete</button>
+    </li>
+  {{ else }}
+    <li>No posts found</li>
+  {{ end }}
+</ul>
+
+</body>
+</html>
