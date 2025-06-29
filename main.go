@@ -31,6 +31,7 @@ func main() {
 
 	// Public routes
 	r.HandleFunc("/login", handlers.LoginForm).Methods("GET")
+	r.HandleFunc("/", handlers.LoginForm).Methods("GET")
 	r.HandleFunc("/login", handlers.Login).Methods("POST")
 	r.HandleFunc("/logout", handlers.Logout).Methods("GET")
 

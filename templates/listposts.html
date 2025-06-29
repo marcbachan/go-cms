@@ -7,27 +7,40 @@
   <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-  <h1>📚 Posts</h1>
-  <a href="/new"><button style="justify-content: center;">✍🏾 Create New Post</button></a>
-  <h3 style="padding-top: 2rem;">List</h3>
-  <ul>
-    {{ range . }}
-      <li id="post-{{ . }}" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
-        <a href="/edit/{{ . }}">{{ . }}</a>
+  <h1>♎︎ Posts</h1>
+  <div class="button-row" style="padding-bottom: 3rem;">
+    <a href="/new"><button class="button" style="justify-content: center;">+ Create New Post</button></a>
+    <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤ Log Out</button></a>
+  </div>
+  
+    {{ range .Posts }}
+      <li id="post-{{ .Slug }}" style="border-bottom: 1px solid #ddd; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <a href="/edit/{{ .Slug }}" style="font-weight: bold;">{{ .Slug }}</a>
+        <div style="font-size: 0.85rem; color: #666;">{{ .Date }}</div>
+        <div style="margin-top: 4px;">
+          <p>tags:
+          {{ range .Tags }}
+            <span class="tag">{{ . }}</span>
+          {{ end }}
+          </p>
+        </div>
+      </div>
         <button 
-          hx-delete="/api/posts/{{ . }}" 
-          hx-target="#post-{{ . }}" 
+          class="button"
+          hx-delete="/api/posts/{{ .Slug }}" 
+          hx-target="#post-{{ .Slug }}" 
           hx-swap="outerHTML"
-          hx-confirm="Are you sure you want to delete post '{{ . }}'?"
-          style="margin-left: 1rem;">
-          🗑 Delete
+          hx-confirm="Are you sure you want to delete post '{{ .Slug }}'?"
+          style="background-color: rgb(250, 138, 138) !important;">
+          Ｘ Delete
         </button>
       </li>
 
     {{ else }}
       <li>No posts found</li>
     {{ end }}
-  </ul>
+  
   
 </body>
 </html>
