@@ -1,14 +1,16 @@
 package model
 
 type BlogPost struct {
-	Title      string `json:"title"`
-	Excerpt    string `json:"excerpt"`
-	CoverImage string `json:"coverImage"`
-	Date       string `json:"date"`
-	OGImage    struct {
-		URL string `json:"url"`
-	} `json:"ogImage"`
-	Tags    []string `json:"tags"`
-	Content string   `json:"content"`
-	Slug    string   `json:"slug"`
+	Title      string `yaml:"title" json:"title"`
+	Excerpt    string `yaml:"excerpt" json:"excerpt"`
+	CoverImage string `yaml:"coverImage" json:"coverImage"`
+	Date       string `yaml:"date" json:"date"`
+
+	OGImage struct {
+		URL string `yaml:"url" json:"url"`
+	} `yaml:"ogImage" json:"ogImage"`
+
+	Tags    []string `yaml:"tags" json:"tags"`
+	Content string   `yaml:"-" json:"content"`
+	Slug    string   `yaml:"-" json:"slug"`
 }
