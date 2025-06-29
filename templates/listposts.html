@@ -12,7 +12,7 @@
     <a href="/new"><button class="button" style="justify-content: center;">+ Create New Post</button></a>
     <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤ Log Out</button></a>
   </div>
-  <ul>
+  
     {{ range .Posts }}
       <li id="post-{{ .Slug }}" style="border-bottom: 1px solid #ddd; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
       <div>
@@ -40,7 +40,7 @@
     {{ else }}
       <li>No posts found</li>
     {{ end }}
-  </ul>
+  
   
 </body>
 </html>
