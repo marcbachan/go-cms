@@ -2,49 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create Blog Post</title>
+  <title>Create New Post</title>
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-    }
-
-    #dropzone {
-      border: 2px dashed #aaa;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 16px;
-      background-color: #f9f9f9;
-      transition: background 0.2s ease;
-    }
-
-    #dropzone.dragover {
-      background-color: #eef;
-    }
-
-    #dropzone img {
-      max-width: 100%;
-      margin-top: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-  <h1>Create Blog Post</h1>
+  <a href="/posts"><button>Back to Post List</button></a>
+  <h1>Create New Post</h1>
 
   <form id="postForm" hx-post="/api/posts" hx-target="#result" enctype="application/json" onsubmit="handleFormSubmit(event)">
     <label for="title">Title</label>
@@ -72,13 +36,15 @@
          ondragover="handleDragOver(event)"
          ondragleave="handleDragLeave(event)">
       <strong>Drop an image here</strong>
+      <div id="previewContainer"></div>
+      <div id="statusMessage"></div>
     </div>
 
     <!-- Hidden fields populated by upload -->
     <input type="hidden" id="coverImage" name="coverImage" />
     <input type="hidden" id="ogImage.url" name="ogImage.url" />
 
-    <button type="submit">Create Post</button>
+    <button type="submit">🚀 Create Post</button>
   </form>
 
   <div id="result" style="margin-top: 20px;"></div>
@@ -95,11 +61,18 @@
 
     async function handleDrop(event) {
       event.preventDefault();
-      document.getElementById('dropzone').classList.remove('dragover');
+      const dropzone = document.getElementById('dropzone');
+      dropzone.classList.remove('dragover');
 
       const dt = event.dataTransfer;
       const files = dt.files;
       if (!files || files.length === 0) return;
+
+      const file = files[0];
+      if (!file.type.startsWith("image/")) {
+        alert("Please upload an image file.");
+        return;
+      }
 
       const title = document.getElementById('title').value;
       if (!title) {
@@ -108,7 +81,7 @@
       }
 
       const formData = new FormData();
-      formData.append("image", files[0]);
+      formData.append("image", file);
       formData.append("title", title);
 
       const res = await fetch("/api/upload", {
@@ -128,13 +101,28 @@
       document.getElementById("coverImage").value = url;
       document.getElementById("ogImage.url").value = url;
 
-      // Preview image
-      const preview = document.createElement("img");
-      preview.src = url;
+      // Show preview and reset button
+      const previewContainer = document.getElementById("previewContainer");
+      previewContainer.innerHTML = ""; // Clear previous preview
 
-      const dropzone = document.getElementById("dropzone");
-      dropzone.innerHTML = "";
-      dropzone.appendChild(preview);
+      const img = document.createElement("img");
+      img.src = url;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove Image";
+      removeBtn.onclick = () => {
+        previewContainer.innerHTML = "";
+        document.getElementById("coverImage").value = "";
+        document.getElementById("ogImage.url").value = "";
+        document.getElementById("statusMessage").textContent = "";
+      };
+
+      previewContainer.appendChild(img);
+      previewContainer.appendChild(removeBtn);
+
+      // Show status
+      document.getElementById("statusMessage").textContent = `Uploaded: ${file.name}`;
     }
 
     // HTMX doesn't natively submit JSON — we hijack the form and send JSON manually
@@ -147,7 +135,6 @@
       // Convert FormData to a JSON object
       const json = {};
       for (const [key, value] of formData.entries()) {
-        // Support nested fields like "ogImage.url"
         if (key.includes(".")) {
           const [parent, child] = key.split(".");
           json[parent] = json[parent] || {};

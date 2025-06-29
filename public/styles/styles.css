@@ -1,0 +1,38 @@
+/* public/styles.css */
+
+body {
+  font-family: sans-serif;
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}
+
+#dropzone {
+  border: 2px dashed #aaa;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  background-color: #f9f9f9;
+  transition: background 0.2s ease;
+}
+
+#dropzone.dragover {
+  background-color: #eef;
+}
+
+#dropzone img {
+  max-width: 100%;
+  margin-top: 10px;
+}
