@@ -2,11 +2,15 @@ package handlers
 
 import (
 	"cms/config"
+	"cms/model"
+	"cms/storage"
 	"cms/utils"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -50,14 +54,56 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var slugs []string
+	var posts []model.BlogPost
+
 	for _, f := range files {
 		if !f.IsDir() && strings.HasSuffix(f.Name(), ".md") {
-			slug := strings.TrimSuffix(f.Name(), ".md")
-			slugs = append(slugs, slug)
+			fullPath := filepath.Join(config.AppConfig.PostsDir, f.Name())
+
+			post, _, err := storage.ReadMarkdownWithFrontmatter(fullPath)
+			if err != nil {
+				log.Printf("Failed to read post %s: %v", f.Name(), err)
+				continue
+			}
+
+			// Add slug (since it's not stored in frontmatter)
+			post.Slug = strings.TrimSuffix(f.Name(), ".md")
+			posts = append(posts, post)
 		}
 	}
 
+	// Optional: support tag filtering via query param
+	filterTag := r.URL.Query().Get("tag")
+	var filtered []model.BlogPost
+	if filterTag != "" {
+		for _, p := range posts {
+			for _, tag := range p.Tags {
+				if tag == filterTag {
+					filtered = append(filtered, p)
+					break
+				}
+			}
+		}
+	} else {
+		filtered = posts
+	}
+
+	// Collect unique tags for filtering UI
+	tagSet := map[string]struct{}{}
+	for _, p := range posts {
+		for _, t := range p.Tags {
+			tagSet[t] = struct{}{}
+		}
+	}
+	var allTags []string
+	for tag := range tagSet {
+		allTags = append(allTags, tag)
+	}
+	sort.Strings(allTags)
+
 	tmpl := template.Must(template.ParseFiles("templates/listposts.html"))
-	tmpl.Execute(w, slugs)
+	tmpl.Execute(w, map[string]any{
+		"Posts": filtered,
+		"Tags":  allTags,
+	})
 }

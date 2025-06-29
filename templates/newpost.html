@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-  <a href="/posts"><button>Back to Post List</button></a>
-  <h1>Create New Post</h1>
+  <a href="/posts"><button class="button">← Back to Post List</button></a>
+  <h1>✎ Create New Post</h1>
 
   <form id="postForm" hx-post="/api/posts" hx-target="#result" enctype="application/json" onsubmit="handleFormSubmit(event)">
     <label for="title">Title</label>
@@ -17,7 +17,7 @@
     <label for="excerpt">Excerpt</label>
     <input id="excerpt" name="excerpt" />
 
-    <label for="slug">Slug</label>
+    <label for="slug">Slug (filename)</label>
     <input id="slug" name="slug" required />
 
     <label for="tags">Tags (comma-separated)</label>
@@ -30,7 +30,7 @@
     <textarea id="content" name="content" rows="10"></textarea>
 
     <!-- Drag-and-drop image upload -->
-    <label>Cover Image (Drag & Drop)</label>
+    <label>Cover Image</label>
     <div id="dropzone"
          ondrop="handleDrop(event)"
          ondragover="handleDragOver(event)"
@@ -44,7 +44,7 @@
     <input type="hidden" id="coverImage" name="coverImage" />
     <input type="hidden" id="ogImage.url" name="ogImage.url" />
 
-    <button type="submit">🚀 Create Post</button>
+    <button type="submit" class="button">☛ Create Post</button>
   </form>
 
   <div id="result" style="margin-top: 20px;"></div>
