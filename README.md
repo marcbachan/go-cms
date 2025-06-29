@@ -159,7 +159,6 @@ To build and run manually:
 docker build -t cms .
 docker run -p 8080:8080 cms
 ```
-NOTE: 
 
 ---
 
