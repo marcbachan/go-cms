@@ -7,7 +7,10 @@
   <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
+<div class="button-row">
   <a href="/posts"><button class="button">← Back to Post List</button></a>
+  <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤Log Out</button></a>
+</div>
   <h1>✎ Create New Post</h1>
 
   <form id="postForm" hx-post="/api/posts" hx-target="#result" enctype="application/json" onsubmit="handleFormSubmit(event)">
