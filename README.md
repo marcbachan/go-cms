@@ -116,7 +116,7 @@ SESSION_SECRET="super-secret"
 
 ### `config/config.json`
 
-Set these paths to the corresponding directories for posts and images in your project. Support for mult
+Set these paths to the corresponding directories for posts and images in your project. Support for multiple directories is meant to be inferred and extended through the use of tags.
 
 ```json
 {
