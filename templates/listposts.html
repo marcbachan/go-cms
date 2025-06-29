@@ -8,11 +8,10 @@
 </head>
 <body>
   <h1>♎︎ Posts</h1>
-  <div class="button-row">
-    <a href="/new"><button class="button" style="justify-content: center;">✎ Create New Post</button></a>
-    <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤Log Out</button></a>
+  <div class="button-row" style="padding-bottom: 3rem;">
+    <a href="/new"><button class="button" style="justify-content: center;">+ Create New Post</button></a>
+    <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤ Log Out</button></a>
   </div>
-  <h3 style="padding-top: 2rem;">List</h3>
   <ul>
     {{ range .Posts }}
       <li id="post-{{ .Slug }}" style="border-bottom: 1px solid #ddd; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
