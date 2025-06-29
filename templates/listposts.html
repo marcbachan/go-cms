@@ -3,21 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <title>Post List</title>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-<a href="/new"><button>Create New Post</button></a>
+  <h1>📚 Posts</h1>
+  <a href="/new"><button style="justify-content: center;">✍🏾 Create New Post</button></a>
+  <h3 style="padding-top: 2rem;">List</h3>
+  <ul>
+    {{ range . }}
+      <li id="post-{{ . }}" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+        <a href="/edit/{{ . }}">{{ . }}</a>
+        <button 
+          hx-delete="/api/posts/{{ . }}" 
+          hx-target="#post-{{ . }}" 
+          hx-swap="outerHTML"
+          hx-confirm="Are you sure you want to delete post '{{ . }}'?"
+          style="margin-left: 1rem;">
+          🗑 Delete
+        </button>
+      </li>
 
-    <h1>All Blog Posts</h1>
-<ul>
-  {{ range . }}
-    <li>
-      <a href="/edit/{{ . }}">{{ . }}</a>
-      <button hx-delete="/api/posts/{{ . }}" hx-target="#post-{{ . }}" hx-swap="outerHTML">🗑 Delete</button>
-    </li>
-  {{ else }}
-    <li>No posts found</li>
-  {{ end }}
-</ul>
-
+    {{ else }}
+      <li>No posts found</li>
+    {{ end }}
+  </ul>
+  
 </body>
 </html>
+

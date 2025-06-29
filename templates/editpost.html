@@ -4,12 +4,11 @@
   <meta charset="UTF-8" />
   <title>Edit Post - {{ .Post.Title }}</title>
   <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-  <style>
-    input, textarea { width: 100%; padding: 8px; margin-bottom: 12px; }
-    label { font-weight: bold; display: block; }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
+  <a href="/posts"><button>Back to Post List</button></a>
   <h1>✏️ Editing Post: {{ .Post.Title }}</h1>
 
   <form id="editForm" onsubmit="submitEdit(event)">
@@ -32,29 +31,43 @@
     <input name="tags" value="{{ join .Post.Tags ", " }}" />
 
     <label>Content</label>
-    <textarea name="content" id="content" rows="10" oninput="updatePreview()">{{ .Body }}</textarea>
+    <textarea name="content" id="content" rows="10">{{ .Body }}</textarea>
 
     <button type="submit">Save Changes</button>
   </form>
 
   <div id="result" style="margin-top: 1em;"></div>
-    
 
-    <h3>Live Preview</h3>
-    <div id="preview" style="border:1px solid #ccc; padding:1em;"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        function updatePreview() {
-        const content = document.getElementById("content").value;
-        document.getElementById("preview").innerHTML = marked.parse(content);
-     }
-
-        window.onload = updatePreview;
-    </script>
-
+  <h3>Live Preview</h3>
+  <div id="preview" style="border:1px solid #ccc; padding:1em;"></div>
 
   <script>
+    function updatePreview() {
+      const content = document.getElementById("content").value;
+      const coverImage = document.querySelector('input[name="coverImage"]').value;
+
+      const imageHTML = coverImage
+        ? `<img src="${coverImage}" alt="cover image" style="max-width:100%; margin-bottom:1em;" onerror="this.style.display='none'" />`
+        : '';
+
+      document.getElementById("preview").innerHTML =
+        imageHTML + marked.parse(content);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      updatePreview();
+
+      const coverInput = document.querySelector('input[name="coverImage"]');
+      if (coverInput) {
+        coverInput.addEventListener("input", updatePreview);
+      }
+
+      const contentInput = document.getElementById("content");
+      if (contentInput) {
+        contentInput.addEventListener("input", updatePreview);
+      }
+    });
+
     async function submitEdit(event) {
       event.preventDefault();
       const form = document.getElementById("editForm");

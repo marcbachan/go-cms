@@ -34,6 +34,9 @@ func main() {
 	r.HandleFunc("/login", handlers.Login).Methods("POST")
 	r.HandleFunc("/logout", handlers.Logout).Methods("GET")
 
+	// Static file server
+	r.PathPrefix("/styles/").Handler(http.StripPrefix("/styles/", http.FileServer(http.Dir("./public/styles/"))))
+
 	// Auth-protected routes
 	protected := r.NewRoute().Subrouter()
 	protected.Use(handlers.RequireLogin)
