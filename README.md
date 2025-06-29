@@ -74,9 +74,7 @@ docker-compose up --build
 
 ## 🔐 Authentication
 
-* On first run, you'll need to set 
-
-`.env`
+* On first run, you'll need to set your user, password, and secret in  an `.env` file::
 
 ```
 CMS_USER="admin"
@@ -116,7 +114,7 @@ SESSION_SECRET="super-secret"
 
 ### `config/config.json`
 
-Set these paths to the corresponding directories for posts and images in your project. Support for mult
+Set these paths to the corresponding directories for posts and images in your project. Multiple directories are not supported - the hope is to handle any custom filtering with tags on the frontend, or just store all content in a database (i.e., Postgres).
 
 ```json
 {
@@ -193,9 +191,9 @@ Then add to your root `package.json`:
 
 ## Ideas for Roadmap
 
-One of the best things about learning Go and building this project is gradually understanding what else can be done with it. These are some ideas I'd like to implement eventually (or work with others on!):
+One of the best things about learning Go and building this project is gradually understanding what else can be done with it. These are some ideas I'd like to implement eventually (or work with others on):
 
 * Filter post types by tag
 * OAuth or JWT-based auth
 * Markdown linting or preview styles
-* Integrate database like Postgres
+* Integrate a database like Postgres (or at least the option to do this with an optional config for larger projects)
