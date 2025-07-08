@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"cms/config"
 	"cms/model"
@@ -75,7 +76,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "Post written to %s\n", fullPath)
+	fmt.Fprintf(w, "🎉 Post written to %s\n", fullPath)
 }
 
 func UploadImage(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +133,8 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Post updated")
+	currentTime := time.Now()
+	fmt.Fprintf(w, "✅ Post updated at: %s\n", currentTime.Format(time.RFC3339))
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
