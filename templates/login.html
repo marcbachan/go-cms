@@ -6,13 +6,13 @@
   <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-  <h1>Admin Login</h1>
+  <h1>Login</h1>
   <form method="POST" action="/login">
-    <label>Username</label><br/>
+    <label>Username</label>
     <input name="username" required /><br/>
-    <label>Password</label><br/>
+    <label>Password</label>
     <input type="password" name="password" required /><br/>
-    <button type="submit">Login</button>
+    <button class="button" type="submit">Login</button>
   </form>
   {{ if .Error }}
     <p style="color:red;">Invalid credentials</p>

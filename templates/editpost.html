@@ -8,8 +8,12 @@
   <link rel="stylesheet" href="/styles/styles.css" />
 </head>
 <body>
-  <a href="/posts"><button>Back to Post List</button></a>
-  <h1>✏️ Editing Post: {{ .Post.Title }}</h1>
+  
+  <div class="button-row">
+    <a href="/posts"><button class="button">← Back to Post List</button></a>
+    <a href="/logout"><button class="button" style="background-color: rgb(255, 146, 201);">⇤ Log Out</button></a>
+  </div>
+  <h1>△ Editing Post: {{ .Post.Title }}</h1>
 
   <form id="editForm" onsubmit="submitEdit(event)">
     <label>Title</label>
@@ -33,7 +37,7 @@
     <label>Content</label>
     <textarea name="content" id="content" rows="10">{{ .Body }}</textarea>
 
-    <button type="submit">Save Changes</button>
+    <button class="button" type="submit">⎆ Save Changes</button>
   </form>
 
   <div id="result" style="margin-top: 1em;"></div>

@@ -1,7 +1,16 @@
 /* public/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #f5f5f5;
+  --text-color: #333;
+  --font-family: 'Poppins', sans-serif;
+}
 
 body {
-  font-family: sans-serif;
+  font-family: var(--font-family, 'Poppins'), sans-serif;
+  color: var(--text-color);
   max-width: 700px;
   margin: 2rem auto;
 }
@@ -36,3 +45,61 @@ label {
   max-width: 100%;
   margin-top: 10px;
 }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-family: var(--font-family, 'Poppins'), sans-serif;
+  color: black;
+  background-color: rgb(255, 171, 171);
+  border: 2px solid black;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #ef4444; /* red-500 */
+  color: white;
+  border-color: white;
+}
+
+/* Optional: dark mode support */
+@media (prefers-color-scheme: dark) {
+  .button {
+    color: rgb(0, 0, 0);
+    background-color: rgb(252, 255, 209);
+    border-color: rgb(0, 0, 0);
+  }
+
+  .button:hover {
+    background-color: #ef4444;
+    color: white;
+    border-color: white;
+  }
+}
+
+.tag {
+  display: inline-block;
+  background-color: #d6b9ff;
+  border-color: #696969;
+  border-width: 1px;
+  border-style: solid;
+  color: #333333;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  margin-right: 4px;
+  border-radius: 4px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
